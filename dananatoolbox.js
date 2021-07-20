@@ -1,7 +1,7 @@
 const discord = require("discord.js");
 require('discord-reply');
 var path = require('path');
-var botConfig = require(path.join(__dirname, "botconfig"));
+var botConfig = require(path.join(__dirname, "botconfig.json"));
 
 const bot = new discord.Client();
 

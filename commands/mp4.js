@@ -18,7 +18,8 @@ module.exports.run = async (bot, message, arguments) => {
             noWarnings: true,
             preferFreeFormats: true,
             youtubeSkipDashManifest: true,
-            o: id
+            o: id,
+            f: 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4'
         }).then(async output => {
             m.edit("Getting your files ready...")
             anonfile.upload(id).then(info => {
