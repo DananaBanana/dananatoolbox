@@ -1,6 +1,4 @@
-const discord = require("discord.js");
 const path = require('path');
-var botConfig = require(path.join(__dirname, "..", "botconfig.json"));
 const fs = require("fs");
 const youtubedl = require('youtube-dl-exec')
 const lib = require(path.join(__dirname, "..", "lib.js"))
@@ -8,9 +6,8 @@ const anonfile = require("anonfile-lib")
 
 module.exports.run = async (bot, message, arguments) => {
 
-    if(!arguments[0]) return message.lineReply("You need to include a youtube link.")
-    let id = lib.videoId(arguments[0])
-    if(!id) return message.lineReply("You need to include a youtube link.")
+    if(!arguments[0]) return message.lineReply("You need to include a link.")
+    let id = await lib.makeId(10) // give the file a unique filename as to not have files with the same name
 
     id = id + ".mp3"
     message.channel.send("Started Download!").then(m => {
@@ -20,12 +17,12 @@ module.exports.run = async (bot, message, arguments) => {
             youtubeSkipDashManifest: true,
             extractAudio: true,
             audioFormat: "mp3",
-            o: id
+            o: id // use ytdl to download an audio file, make sure the filename is the id we specified, and force it to be an mp3
         }).then(async output => {
-            m.edit("Getting your files ready...")
+            m.edit("Getting your files ready...") // upload the file to a 3rd party so the user can download it
             anonfile.upload(id).then(info => {
                 m.edit("Done, download here: " + info.data.file.url.short)
-                fs.unlinkSync(path.join(__dirname, "..", id))
+                fs.unlinkSync(path.join(__dirname, "..", id)) // delete the file as to not take up too much space
             })
         })
     })
@@ -34,5 +31,5 @@ module.exports.run = async (bot, message, arguments) => {
 module.exports.help = {
     name: "mp3",
     aliasses: ["audio"],
-    description: "Download the audio of a youtube video."
+    description: "Download the audio of any site supported by youtube-dl."
 }

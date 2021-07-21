@@ -9,7 +9,7 @@ const fs = require("fs");
 bot.commands = new discord.Collection();
 bot.aliasses = new discord.Collection();
 
-fs.readdir(path.join(__dirname, "commands"), (err, files) => {
+fs.readdir(path.join(__dirname, "commands"), (err, files) => { // load all commands 
 
     if(err) console.log(err);
 
@@ -40,7 +40,7 @@ bot.on("ready", async () => {
     console.log(`${bot.user.username} is online.`)
 
 
-    bot.user.setActivity("ytdl!", { type: "PLAYING" });
+    bot.user.setActivity("with ytdl!", { type: "PLAYING" });
 
 })
 
@@ -49,12 +49,10 @@ bot.on("message", async message => {
     //return if in DM's
     if(message.channel.type === 'dm') return;
     if(message.author.bot) return;
-
-    if (message.author.bot) return;
     
     var prefix = botConfig.prefix;
 
-    if(message.content.startsWith(prefix)) {
+    if(message.content.startsWith(prefix)) { // basic command handling
 
     var messageArray = message.content.split(" ");
     var command = messageArray[0];

@@ -7,28 +7,34 @@ module.exports.run = async (bot, message, arguments) => {
 
     fs.readdir(path.join(__dirname) , (err, files) => {
 
-        if(err) console.log(err);
     
         var jsFiles = files.filter(f => f.split(".").pop() === "js");
 
-        if(arguments[0]) {
-            try{var fileGet = require(`../commands/${arguments[0].toLowerCase() + ".js"}`)} catch(err) {return message.lineReply("I couldn't find your command.")}
-            let embDescription = "Description: " + fileGet.help.description
-            if(fileGet.help.aliasses) {
+        if(arguments[0]) { //if there is a specific request for a command
+            let commands = bot.commands.get(arguments[0]) || bot.aliasses.get(arguments[0]); // make sure aliasses also work
+            if(!commands) return message.lineReply("I couldn't find your command.")
+            let embDescription = "Description: " + commands.help.description
+            if(commands.help.aliasses) {
                 let aliassesArr = [];
-                fileGet.help.aliasses.forEach(alias => {
+                commands.help.aliasses.forEach(alias => {
                     aliassesArr.push(botConfig.prefix + alias)
                 })
-                aliassesArr = aliassesArr.join(", ")
+                if (aliassesArr.length > 0) {
+                    aliassesArr = ("`") + aliassesArr.join("`, `") + "`" //make aliasses look nice
+                } else {
+                    aliassesArr = "/"
+                }
                 embDescription = embDescription + "\nAliasses: " + aliassesArr
             }
             let embed = new discord.MessageEmbed()
-                .setTitle(`${botConfig.prefix}${fileGet.help.name} help`)
+                .setTitle(`${botConfig.prefix}${commands.help.name} help`)
                 .setDescription(embDescription)
                 .setTimestamp()
                 .setColor('4c8639')
             return message.channel.send(embed)
         }
+
+        // if you don't have a specific request for a command, send the list of commands
 
         let description = "";
         jsFiles.forEach((f,i) => {
