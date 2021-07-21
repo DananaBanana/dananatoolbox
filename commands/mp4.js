@@ -16,14 +16,13 @@ module.exports.run = async (bot, message, arguments) => {
     message.channel.send("Started Download!").then(m => {
         youtubedl(arguments[0], {
             noWarnings: true,
-            preferFreeFormats: true,
             youtubeSkipDashManifest: true,
             o: id,
-            f: 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4'
+            f: 'best',
+            mergeOutputFormat: 'mp4'
         }).then(async output => {
             m.edit("Getting your files ready...")
             anonfile.upload(id).then(info => {
-                console.log(info)
                 m.edit("Done, download here: " + info.data.file.url.short)
                 fs.unlinkSync(path.join(__dirname, "..", id))
             })

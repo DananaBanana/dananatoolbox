@@ -10,20 +10,20 @@ module.exports.run = async (bot, message, arguments) => {
 
     let url = arguments[0];
     if(!url) return message.lineReply("You need to include a valid link.")
-    let id = await lib.makeId(5)
+    let id = await lib.makeId(10)
     if(lib.videoId(url)) message.lineReply("You should use `.mp4` for youtube links, but this works too.")
 
     id = id + ".mp4"
     message.channel.send("Started Download!").then(m => {
         youtubedl(url, {
             noWarnings: true,
-            preferFreeFormats: true,
             youtubeSkipDashManifest: true,
-            o: id
+            o: id,
+            f: 'best',
+            mergeOutputFormat: 'mp4'
         }).then(async output => {
             m.edit("Getting your files ready...")
             anonfile.upload(id).then(info => {
-                console.log(info)
                 m.edit("Done, download here: " + info.data.file.url.short)
                 fs.unlinkSync(path.join(__dirname, "..", id))
             })
@@ -35,7 +35,7 @@ module.exports.run = async (bot, message, arguments) => {
 }
 
 module.exports.help = {
-    name: "reddit",
-    aliasses: ["redditsave", "u/savevideo"],
-    description: "Download the video of a reddit post."
+    name: "anyvideo",
+    aliasses: ["reddit", "anyvid", "redditsave", "u/savevideo"],
+    description: "Download the video of any site supported by youtube-dl."
 }

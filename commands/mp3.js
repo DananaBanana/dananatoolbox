@@ -24,7 +24,6 @@ module.exports.run = async (bot, message, arguments) => {
         }).then(async output => {
             m.edit("Getting your files ready...")
             anonfile.upload(id).then(info => {
-                console.log(info)
                 m.edit("Done, download here: " + info.data.file.url.short)
                 fs.unlinkSync(path.join(__dirname, "..", id))
             })
