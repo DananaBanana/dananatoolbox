@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require("fs");
 const youtubedl = require('youtube-dl-exec')
 const lib = require(path.join(__dirname, "..", "lib.js"))
-var botConfig = require(path.join(__dirname, "botconfig.json"));
+var botConfig = require(path.join(__dirname, "..", "botconfig.json"));
 
 module.exports.run = async (bot, message, arguments) => {
 
@@ -16,9 +16,13 @@ module.exports.run = async (bot, message, arguments) => {
             recodeVideo: 'mp3', // use ytdl to download a video, make sure the filename is the id we specified, and force it to be an mp4
             "no-mtime": true
         }).then(async () => {
-            m.edit(`Done!\n${botConfig.host}${id}\nThe site might not work yet, but it'll be fixed ASAP.\nFiles will be deleted after download or after 3 hours.`)
+            m.edit(`Done!\n${botConfig.host}downloads/${id}\nThe site might not work yet, but it'll be fixed ASAP.\nFiles will be deleted after download or after 3 hours.`)
             setTimeout(function() {
-                fs.unlinkSync(path.join(__dirname, "..", id)) // delete the file as to not take up too much space
+                try{
+                    fs.unlinkSync(path.join(__dirname, "..", id)) // delete the file as to not take up too much space
+                } catch (err) {
+                    return;
+                }
             }, 3 * 60 * 60 * 1000)
         })
     })

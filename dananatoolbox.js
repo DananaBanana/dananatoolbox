@@ -79,13 +79,19 @@ app.get('/downloads/:file', function(req, res, next){
     res.setHeader('Content-disposition', 'attachment; filename=' + req.params.file);
     res.setHeader('Content-Type', filetype);
     res.download(filePath, req.params.file, function (err) {
-      if (!err) return res.status(200);
-      if (err.status !== 404) return next(err); // non-404 error
-      // file for download not found
-      res.statusCode = 404;
-      res.send('Cant find that file, sorry!');
+        if (!err) {
+            try {
+            return fs.unlinkSync(filePath);
+        } catch (err) {
+            return;
+        }
+        }
+        if (err.status !== 404) return next(err); // non-404 error
+        // file for download not found
+        res.statusCode = 404;
+        res.send('Cant find that file, sorry!');
     });
-  });
+});
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
