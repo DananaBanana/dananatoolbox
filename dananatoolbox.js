@@ -39,8 +39,7 @@ bot.on("ready", async () => {
 
     console.log(`${bot.user.username} is online.`)
 
-
-    bot.user.setActivity("with ytdl!", { type: "PLAYING" });
+    bot.user.setActivity("with errors, updating code!!", { type: "PLAYING" });
 
 })
 
@@ -65,6 +64,33 @@ bot.on("message", async message => {
     }
 
  });
+
+const express = require("express")
+const app = express()
+const port = 3000
+
+app.get('/downloads/:file', function(req, res, next){
+    var filePath = path.join(__dirname, 'downloads', req.params.file);
+    let filetype;
+
+    if(filePath.endsWith(".mp4")) filetype = 'video/mp4'
+    else if(filePath.endsWith(".mp3")) filetype = 'audio/mp3'
+
+    res.setHeader('Content-disposition', 'attachment; filename=' + req.params.file);
+    res.setHeader('Content-Type', filetype);
+    res.download(filePath, req.params.file, function (err) {
+      if (!err) return res.status(200);
+      if (err.status !== 404) return next(err); // non-404 error
+      // file for download not found
+      res.statusCode = 404;
+      res.send('Cant find that file, sorry!');
+    });
+  });
+
+app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`)
+})
+
 
 bot.on('error', console.error);
 
