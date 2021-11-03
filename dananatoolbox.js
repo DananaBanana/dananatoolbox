@@ -39,7 +39,7 @@ bot.on("ready", async () => {
 
     console.log(`${bot.user.username} is online.`)
 
-    bot.user.setActivity("with errors, updating code!!", { type: "PLAYING" });
+    bot.user.setActivity("with ytdl!", { type: "PLAYING" });
 
 })
 
