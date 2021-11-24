@@ -71,25 +71,16 @@ const port = 3000
 
 app.get('/downloads/:file', function(req, res, next){
     var filePath = path.join(__dirname, 'downloads', req.params.file);
-    let filetype;
 
-    if(filePath.endsWith(".mp4")) filetype = 'video/mp4'
-    else if(filePath.endsWith(".mp3")) filetype = 'audio/mp3'
-
-    res.setHeader('Content-disposition', 'attachment; filename=' + req.params.file);
-    res.setHeader('Content-Type', filetype);
+    res.attachment(filePath)
     res.download(filePath, req.params.file, function (err) {
         if (!err) {
             try {
             return fs.unlinkSync(filePath);
         } catch (err) {
-            return;
+            return console.log(err)
+            }
         }
-        }
-        if (err.status !== 404) return next(err); // non-404 error
-        // file for download not found
-        res.statusCode = 404;
-        res.send('Cant find that file, sorry!');
     });
 });
 

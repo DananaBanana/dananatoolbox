@@ -15,7 +15,7 @@
     "express": "^4.17.1",
     "ffmpeg": "0.0.4",
     "nodebb-plugin-pixeldrain": "^1.0.19",
-    "youtube-dl-exec": "^1.2.4"
+    "youtube-dl-wrap": "^2.1.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
