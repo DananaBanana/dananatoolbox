@@ -15,8 +15,8 @@ module.exports.run = async (bot, message, arguments) => {
     let editedEta = false;
 
     message.channel.send("Started Download!\nThis could take a while.").then(async m => {
-        let metadata = await youtubeDlWrap.getVideoInfo("https://www.youtube.com/watch?v=aqz-KE-bpKQ");
-        if(metadata.filesize_approx >= 4000000000) { // warn the user if the file is larger than 500MB, and cancel the request
+        let metadata = await youtubeDlWrap.getVideoInfo(arguments[0]);
+        if(metadata.filesize_approx*10 >= 4000000000) { // warn the user if the file is larger than 500MB, and cancel the request
             return m.edit("Cancelled.\nThe video was too large, please make sure your video size does not exceed 500MB.\nIf you still want to download the video, please use a different service or use youtube-dl.")
         }
 
