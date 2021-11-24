@@ -21,11 +21,12 @@ module.exports.run = async (bot, message, arguments) => {
         }
 
         let youtubeDlEventEmitter = youtubeDlWrap.exec([arguments[0], 
-            "-f", "bestvideo[ext=mp4][vcodec!*=av01] / best",
-            "-o", `./downloads/%(title)s-[%(id)s]-[${id}].%(ext)s`, // Give it a unique filename
+            "-f", "best",
+            "-o", `./downloads/[%(id)s]-[${id}].%(ext)s`, // Give it a unique filename
             "--playlist-items", "1",
             "--no-mtime",
             "--restrict-filenames",
+            "--recode-video", "mp4",
             "-S", "codec:avc,codec:h264" // this makes sure the file can be displayed by discord if you decide to send it to your friends (this is the main reason I use this bot lol)
         ])
             .on("progress", (p) => {
