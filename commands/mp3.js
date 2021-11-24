@@ -24,7 +24,7 @@ module.exports.run = async (bot, message, arguments) => {
             "-x", // Only download the audio
             "--audio-format", "mp3",
             "-f", "bestvideo[ext=mp3] / best",
-            "-o", `./downloads/%(title)s-[%(id)s]-[${id}].mp3`, // Give it a unique filename
+            "-o", `./downloads/[%(id)s]-[${id}].%(ext)s`, // Give it a unique filename
             "--playlist-items", "1",
             "--no-mtime",
             "--restrict-filenames",
