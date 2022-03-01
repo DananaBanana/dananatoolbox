@@ -45,8 +45,6 @@ bot.on("ready", async () => {
 
 bot.on("message", async message => {
 
-    //return if in DM's
-    if(message.channel.type === 'dm') return;
     if(message.author.bot) return;
     
     var prefix = botConfig.prefix;

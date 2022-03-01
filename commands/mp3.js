@@ -23,7 +23,6 @@ module.exports.run = async (bot, message, arguments) => {
         let youtubeDlEventEmitter = youtubeDlWrap.exec([arguments[0], 
             "-x", // Only download the audio
             "--audio-format", "mp3",
-            "-f", "bestvideo[ext=mp3] / best",
             "-o", `./downloads/[%(id)s]-[${id}].%(ext)s`, // Give it a unique filename
             "--playlist-items", "1",
             "--no-mtime",
@@ -46,7 +45,7 @@ module.exports.run = async (bot, message, arguments) => {
                 }
             })
             .on("youtubeDlEvent", (eventType, eventData) => {
-                if(eventType === "download" && eventData.startsWith(' Destination: ')) {
+                if(eventType === "ExtractAudio" && eventData.startsWith(' Destination: ')) {
                     // Remove " Destination: " and remove the './' as to have the correct message for the link.
                     fileName = eventData.substring(16)
                 }

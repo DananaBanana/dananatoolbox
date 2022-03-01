@@ -15,19 +15,19 @@ module.exports.run = async (bot, message, arguments) => {
     let editedEta = false;
 
     message.channel.send("Started Download!\nThis could take a while.").then(async m => {
-        let metadata = await youtubeDlWrap.getVideoInfo(arguments[0]);
+        /*let metadata = await youtubeDlWrap.getVideoInfo(arguments[0]);
         if(metadata.filesize_approx*10 >= 4000000000) { // warn the user if the file is larger than 500MB, and cancel the request
             return m.edit("Cancelled.\nThe video was too large, please make sure your video size does not exceed 500MB.\nIf you still want to download the video, please use a different service or use youtube-dl.")
-        }
+        }*/
 
         let youtubeDlEventEmitter = youtubeDlWrap.exec([arguments[0], 
-            "-f", "best",
             "-o", `./downloads/[%(id)s]-[${id}].%(ext)s`, // Give it a unique filename
             "--playlist-items", "1",
             "--no-mtime",
             "--restrict-filenames",
-            "--recode-video", "mp4",
-            "-S", "codec:avc,codec:h264" // this makes sure the file can be displayed by discord if you decide to send it to your friends (this is the main reason I use this bot lol)
+            //"--recode-video", "mp4",
+            "-S", "codec:avc,codec:h264", // this makes sure the file can be displayed by discord if you decide to send it to your friends (this is the main reason I use this bot lol)
+            "--user-agent", "facebookexternalhit/1.1"
         ])
             .on("progress", (p) => {
                 if(editedEta == false) {
@@ -50,6 +50,10 @@ module.exports.run = async (bot, message, arguments) => {
                     // Remove " Destination: " and remove the './' as to have the correct message for the link.
                     fileName = eventData.substring(16)
                 }
+                if(eventType === "Merger") {
+                    // If there end up being files that get merged, use that file instead.
+                    fileName = eventData.replace("Merging formats into", "").replaceAll('"', '').replace("./", "").substring(2)
+                }
             })
             
             .on("error", (e) => {
@@ -62,7 +66,8 @@ module.exports.run = async (bot, message, arguments) => {
                 return
             })
             .on("close", async () => {
-                m.edit(`Done!\n<${botConfig.host}${fileName}>\nThe site might not work yet, but it'll be fixed ASAP.\nFiles will be deleted after download or after 3 hours.`)
+                m.delete()
+                message.channel.send(`Done!\n<${botConfig.host}${fileName}>\nThe site might not work yet, but it'll be fixed ASAP.\nFiles will be deleted after download or after 3 hours.`)
                 setTimeout(() => {
                     fs.unlinkSync(path.join(__dirname, "..", fileName)) // delete the file as to not take up too much space
                     m.edit("File has been deleted.")
